@@ -6,6 +6,7 @@ function App() {
 
   const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
+  const [delTask, setDelTask] = useState([]);
 
   const addTask = () => {
     const newObj = {
@@ -29,7 +30,6 @@ function App() {
       }
       return val;
     });
-
     setTasks(objList);
     showDoneTotal();
 
@@ -41,6 +41,7 @@ function App() {
   }
 
   const [doneTotal, setDoneTotal] = useState(0);
+
 
 
   return (
@@ -70,7 +71,7 @@ function App() {
           {
             tasks.map((e) => (
               <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex">
+                <div className="d-flex one">
                   <input
                     type="checkbox"
                     checked={e.isDone}
@@ -79,7 +80,7 @@ function App() {
                 </div>
                 <div>
                   <button className="btn btn-warning">Edit</button>
-                  <button className="btn btn-danger">Delete</button>
+                  {/* <button onClick={() => DelTask(e.id)} className="btn btn-danger">Delete</button> */}
                 </div>
               </div>
             ))}
