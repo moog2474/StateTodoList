@@ -1,24 +1,48 @@
 import './App.css';
 import { useState } from 'react';
+import Modal from "./components/Modal"
 
 // id, title, checkbox
 function App() {
 
+  const init = {
+    id: "",
+    title: "",
+    isDone: false
+  }
+
   const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
-  const [delTask, setDelTask] = useState([]);
+  const [ID, setId] = useState("0");
+  const [modal, setModal] = useState(false);
+  const [obj, setObj] = useState(init)
 
   const addTask = () => {
     const newObj = {
-      id: tasks.length,
+      id: createId(),
       title: task,
       isDone: false,
     };
     const newArr = [...tasks];
-    newArr.push(newObj);
+
+    if (ID !== "0") {
+      newArr.map((e) => {
+        if (e.id === ID) {
+          e.title = task;
+        }
+        return e;
+      });
+    } else {
+      newArr.push(newObj);
+
+    }
     setTasks(newArr);
+
     setTask("")
+    setId("0");
+    setModal(false)
   }
+
 
   const onDoneTask = (id) => {
     const objList = tasks.map((val) => {
@@ -35,6 +59,22 @@ function App() {
 
   };
 
+  const handleModal = () => {
+    setModal(!modal);
+  }
+  const handleEdit = (id, title, isDone) => {
+    if (!isDone) {
+      setTask(title);
+      setId(id);
+      setModal(true);
+    }
+  };
+
+  const handleDelete = (id) => {
+    const newArr = tasks.filter((e) => e.id !== id);
+    setTasks(newArr);
+  };
+
   function showDoneTotal() {
     const arr = tasks.filter((e) => e.isDone === true);
     setDoneTotal(arr.length);
@@ -42,8 +82,19 @@ function App() {
 
   const [doneTotal, setDoneTotal] = useState(0);
 
+  function createId() {
+    let letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let num = "0123456789";
 
+    let newStr =
+      letters.split("")[Math.floor(Math.random() * 10 + 1)] +
+      letters.split("")[Math.floor(Math.random() * 10 + 1)];
 
+    let newNumber =
+      num.split("")[Math.floor(Math.random() * 10 + 1)] +
+      num.split("")[Math.floor(Math.random() * 10 + 1)];
+    return newStr + newNumber
+  }
   return (
     <div className="container">
       <div className="row mt-4">
@@ -56,11 +107,14 @@ function App() {
               className="form-control"
               type="text"
               value={task}
-              onChange={(e) => setTask(e.target.value)}
+              onChange={(e) =>
+                setTask({ ...setObj, title: e.target.value })}
               placeholder="Таск аа оруулна уу" />
-            <button className="btn btn-primary" onClick={addTask}>
+            <input type="hidden" value={ID} />
+            {/* <button className="btn btn-primary" onClick={addTask}>
               Add
-            </button>
+            </button> */}
+            <button onClick={handleModal} className="btn btn-secondary">Modal</button>
           </div>
 
 
@@ -78,14 +132,32 @@ function App() {
                     onChange={() => onDoneTask(e.id)} />
                   <h4>{e.title}</h4>
                 </div>
-                <div>
-                  <button className="btn btn-warning">Edit</button>
-                  {/* <button onClick={() => DelTask(e.id)} className="btn btn-danger">Delete</button> */}
-                </div>
+                <button
+                  className="btn btn-warning"
+                  onClick={() => handleEdit(e.id, e.title, e.isDone)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDelete(e.id)}
+                >
+                  Delete
+                </button>
               </div>
             ))}
 
         </div>
+        {modal && (
+          <Modal
+            modal={modal}
+            setModal={handleModal}
+            task={task}
+            id={ID}
+            setTask={setTask}
+            addTask={addTask}
+          />
+        )}
       </div>
     </div>
   );
