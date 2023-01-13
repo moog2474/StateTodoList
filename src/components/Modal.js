@@ -1,21 +1,24 @@
 import React from "react";
 
-export default function Modal({ modal, setModal, id, setTask, task, addTask }) {
+export default function Modal({ modal, setModal, addTask, id, obj, setObj, handleEdit }) {
     const dn = modal ? "block" : "none";
     return (
         <div class="modal" tabindex="-1" style={{ display: dn }} onClick={setModal}>
-            <div class="modal-dialog">
+            <div class="modal-dialog" onClick={(e) => e.stopPropagation()}>
                 <div class="modal-content">
                     <div class="modal-header w-100">
-                        <h5 class="modal-title m-0">Засах</h5>
+                        <h5 class="modal-title m-0">Add task</h5>
                     </div>
-                    <div class="modal-body w-100" onClick={(e) => e.stopPropagation()}>
+                    <div class="modal-body w-100">
+                        <label type="text">Write task</label>
                         <input
                             id="HaH"
                             className="form-control"
                             type="text"
-                            value={task}
-                            onChange={(e) => setTask(e.target.value)}
+                            value={setObj.task}
+                            onChange={(e) => {
+                                setObj({ ...obj, title: e.target.value })
+                            }}
                             placeholder="task oruulna uu"
                         />
 
@@ -27,7 +30,7 @@ export default function Modal({ modal, setModal, id, setTask, task, addTask }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
 
     )
 }
